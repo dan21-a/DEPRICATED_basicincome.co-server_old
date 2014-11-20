@@ -1,18 +1,13 @@
+<pre>
+ ____   __   ____  __  ___  __  __ _   ___  __   _  _  ____     ___  __  
+(  _ \ / _\ / ___)(  )/ __)(  )(  ( \ / __)/  \ ( \/ )(  __)   / __)/  \ 
+ ) _ (/    \\___ \ )(( (__  )( /    /( (__(  O )/ \/ \ ) _)  _( (__(  O )
+(____/\_/\_/(____/(__)\___)(__)\_)__) \___)\__/ \_)(_/(____)(_)\___)\__/ 
 
-     ,-----.,--.                  ,--. ,---.   ,--.,------.  ,------.
-    '  .--./|  | ,---. ,--.,--. ,-|  || o   \  |  ||  .-.  \ |  .---'
-    |  |    |  || .-. ||  ||  |' .-. |`..'  |  |  ||  |  \  :|  `--, 
-    '  '--'\|  |' '-' ''  ''  '\ `-' | .'  /   |  ||  '--'  /|  `---.
-     `-----'`--' `---'  `----'  `---'  `--'    `--'`-------' `------'
-    ----------------------------------------------------------------- 
+</pre>
 
+## http://bascincome.co
 
-Hi there! Welcome to Cloud9 IDE!
+**todo:** 
 
-To get you started, create some files, play with the terminal,
-or visit http://docs.c9.io for our documentation.
-If you want, you can also go watch some training videos at
-http://www.youtube.com/user/c9ide.
-
-Happy coding!
-The Cloud9 IDE team
+* construct swarm-redistribution API
