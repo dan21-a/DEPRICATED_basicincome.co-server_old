@@ -8,6 +8,11 @@
 
 ## http://bascincome.co
 
+
+
+### WHAT ?
+<a href="http://www.resilience.me/videos.html">P2P-dividend protocols API</a>
+
 **todo:** 
 
 * construct swarm-redistribution API
