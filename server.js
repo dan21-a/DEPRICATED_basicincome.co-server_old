@@ -1,4 +1,9 @@
+var async      = require('async');
+
+
 // ---------------------------- connect to ripple-lib -----------------------------
+
+
 
 /* Loading ripple-lib with Node.js */
 var ripple = require('ripple-lib')
@@ -104,22 +109,70 @@ var server = ws.createServer(function (conn) {
         ACCOUNT_ID = BLOB[0].account_id
         WALLET = BLOB[1]
         COLLECTION = ACCOUNT_ID
-        wallet = mongoose.model('wallet', wallet_schema, COLLECTION);//reloads COLLECTION
+
+
+
+
+
 
 // ---------------------------- swarm-redistribution ----------------------------------
-               
+
+// FIRST, collect data from the coin platform
+
+ // this example connects with http://client.basicincome.co
+
+    var taxRate
+    var total_amount
+
+    
+    var currency
+    var q = 0
 
 
-        var PAYMENT_BLOB = []
+
+function get_dividend_lines(callback){
+    
+    
+    tax_blob = mongoose.model('tax_blob', tax_blob_schema, ACCOUNT_ID);
+    // get the currency
+    tax_blob.find({type: "tax_blob"}).exec(function(err,doc){
+        if(q<doc.length){
+        total_amount = doc[q].total_amount
+        
+        wallet = mongoose.model('wallet', wallet_schema, ACCOUNT_ID);
+        // get the taxRate
+        wallet.findOne({type: "wallet", currency: doc[q].currency}).exec(function(err,doc){
+        currency = doc.currency;
+        taxRate=doc.taxRate;
+        })
+        }
+    });
+  
+  
+    dividend_pathway = mongoose.model('dividend_pathway', dividend_pathways_schema, COLLECTION);//to insert new COLLECTION
+    console.log("scanning collection: "+ COLLECTION);
+    dividend_pathway.find({type: "dividend_pathway", currency: currency} ).exec(function(err, doc) {
+    
+     return callback(doc)
+
+    });
 
 
-swarm_redistribution()
+
+}
 
 
+// ---------------------------- swarm-redistribution API ----------------------------------
+// coin-agnostic general purpuse API - connect any coin platform
+// my swarm-redistribution API is the major component of project resilience
+// and what I called peer-to-peer-dividend-protocols
+// http://resilience.me and http://basicincome.co
 
-function swarm_redistribution(){
+// the API can be used by any coin, money, thing, platform
+
 
     var lines = [];//lines.push(line)
+   
     
     var x = 0;//recursion()
     var y = 0;//recursion()
@@ -131,51 +184,50 @@ function swarm_redistribution(){
     var taxRate_switch = false
     var taxRate_x;
     var taxRate_ratio_x;
-    
-// ------- FIRST, dividend_lines() and taxRate-ratios -----------------
+
+var get_collection = function() {
+    //connect your coin here, this is how you connect to the API
+    //the callback feeds collection/dividend-pathways
+    //this example connects with http://client.basicincome.co
+get_dividend_lines(swarm_redistribution)
+}
+
+get_collection()
+
+    //
+
+function swarm_redistribution(pathway){
+
+console.log(pathway)
+console.log("hahaha")
+
+// ------- First, construct fractal dividend lines -----------------
 // see http://www.resilience.me/theory.html
 
 
-    
-    // get the currency
-    var q = 0
-    var currency
-    var taxRate
-    var total_amount
-    
-    function get_currency(){
-    tax_blob = mongoose.model('tax_blob', tax_blob_schema, COLLECTION);
-    tax_blob.find({type: "tax_blob"}).exec(function(err,doc){
-        if(q<doc.length){
-        total_amount = doc[q].total_amount
-        console.log(doc[q].currency)
-        // get the taxRate
-        wallet.findOne({type: "wallet", currency: doc[q].currency}).exec(function(err,doc){
-                console.log(doc)
-                currency = doc.currency;taxRate=doc.taxRate
-                
-                dividend_lines()
-            })
-        }
-    });
-    }
-    get_currency()
+ var w = 0;
+        var line = []
 
-    function dividend_lines() {
-    dividend_pathway = mongoose.model('dividend_pathway', dividend_pathways_schema, COLLECTION);//to insert new COLLECTION
-    console.log("scanning collection: "+ COLLECTION);
-    dividend_pathway.find({type: "dividend_pathway", currency: currency} ).exec(function(err, doc) {
-    var pathway = doc
-    if(pathway.length > 0){var w = 0;var line = [];
-        loop(pathway, w, line);
-    }
-    else console.log("collection is empty"), recursion()
-    });
-    }
+if(pathway.length>0){
+
+
+    loop(pathway, line, w);// add taxRate ratios
+
     
-    function loop(pathway, w, line) {
+}
+else{
+console.log("collection is empty")
+branch()
+}
+
+    
+    
+    
+    function loop(pathway, line, w) {
     var q = 0
     // calculate taxRatio
+    console.log(w)
+    console.log(pathway[w])
     var taxRate_y = pathway[w].taxRate
     if(taxRate_switch === false){
      taxRate_x = taxRate
@@ -206,17 +258,15 @@ function swarm_redistribution(){
             lines.push(line)
         };
         
-        recursion()
+        branch()
     }
     }
-
-
 
       
-// STEP 2: recursion (add all dividend pathways for lines[x][i].account)        
+// STEP 2: branch out (add all dividend pathways for lines[x][i].account)        
 
 
-    function recursion(){
+    function branch(){
             if(x<lines.length){
             console.log("recursion nr "+x)
         if(y<lines[x].length){
@@ -225,21 +275,19 @@ function swarm_redistribution(){
             taxRate_x = lines[x][y].taxRate
             COLLECTION = lines[x][y].account;
             y++;
-            dividend_lines();
+            get_collection();
         }
                 
         else {
            x++;
            y = 0;
             console.log("recursion nr "+x)
-            dividend_lines()
+            get_collection()
         }
         
             }
             else console.log(lines), console.log("END"), outgoing_payments()
         }
-         
-         
          
              
     // ------- SECOND, outgoing payments -----------------
@@ -265,7 +313,7 @@ function swarm_redistribution(){
                 }
                 else x++
                 loop()
-            }else q++, get_currency();
+            }else q++, get_collection();
          }
 }
    

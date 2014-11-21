@@ -8,7 +8,9 @@
   "dependencies": {
     "nodejs-websocket": "latest",
     "mongoose": "latest",
-    "ripple-lib": "latest"
+    "ripple-lib": "latest",
+        "async": "latest"
+
 
   }
 }
