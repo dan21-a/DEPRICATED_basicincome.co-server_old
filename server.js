@@ -1,6 +1,3 @@
-var async      = require('async');
-
-
 // ---------------------------- connect to ripple-lib -----------------------------
 
 
@@ -194,7 +191,10 @@ get_dividend_lines(swarm_redistribution)
 
 get_collection()
 
-    //
+
+
+
+// swarm-redistribution script:
 
 function swarm_redistribution(pathway){
 
