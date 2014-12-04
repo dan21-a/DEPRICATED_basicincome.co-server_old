@@ -77,7 +77,7 @@ var accounts = []
     })
     }
 
-mongoose.connect('mongodb://AwSZome:jn0903@ds059907.mongolab.com:59907/awesome_box');
+mongoose.connect('mongodb://guest:guest@ds059907.mongolab.com:59907/awesome_box');
 mongoose.connection.once('open', function(){ get_collections()})
 
 
